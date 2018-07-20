@@ -71,19 +71,19 @@
             <div class="container">
                 <div class="row">
                     <div class="blog-masonry masonry-true">
-                        {% for i in imagePath %}
+                        {% for i in imageInfo %}
                         <div class="post-masonry col-md-4 col-sm-6">
                             <div class="post-thumb">
-                                <img src={{ i }} alt="">
+                                <img src={{ i.imagePath }} alt="">
                                 <div class="title-over">
-                                    <h4><a href="#">Title one goes here</a></h4>
+                                    <h4><a href="#">{{ i.imageTittle }}</a></h4>
                                 </div>
                                 <div class="post-hover text-center">
                                     <div class="inside">
                                         <i class="fa fa-plus"></i>
-                                        <span class="date">25 Jan 2084</span>
-                                        <h4><a href="#">Title one goes here</a></h4>
-                                        <p>Cum sociis natoque penatibus et magnis dis parturient</p>
+                                        <span class="date">{{ i.createTime }}</span>
+                                        <h4><a href="#">{{ i.imageTittle }}</a></h4>
+                                        <p>{{i.imageDesc }}</p>
                                     </div>
                                 </div>
                             </div>

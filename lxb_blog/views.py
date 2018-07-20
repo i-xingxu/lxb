@@ -1,13 +1,24 @@
+#coding=utf-8
 from django.shortcuts import render
 from lxb_blog.models import myweb
+from django.template import  Context
 
 # Create your views here.
 
 def home(request):
-    post_list = myweb.objects.all()  #获取全部的Article对象
+    imageInfo = myweb.objects.all()  #获取全部的Article对象
     context={}
-    data=myweb.objects.get(id=2)
+    # context["imagePath"] = []
+    # context["imageTittle"] = []
+    # context["imageDesc"] = []
+    # context["createTime"] = []
 
+    contexts=[]
+    for i in imageInfo:
+        context["imagePath"]=i.img_path
+        context["imageTittle"]=i.img_tittle
+        context["imageDesc"]=i.img_desc
+        context["createTime"]=i.create_time
+        contexts.append(context)
 
-    context["imagePath"]=[data.img_path]
-    return render(request, 'index.html',context)
+    return render(request, 'index.html',{"imageInfo":contexts})
