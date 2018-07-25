@@ -1,7 +1,6 @@
 #coding=utf-8
 from django.shortcuts import render
 from lxb_blog.models import myweb
-from django.template import  Context
 
 # Create your views here.
 
