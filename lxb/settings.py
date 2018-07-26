@@ -136,3 +136,6 @@ STATICFILES_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(HERE, 'static/'),
 )
+
+# 添加图片存储路径
+MEDIA_ROOT = './static/'
