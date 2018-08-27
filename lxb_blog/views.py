@@ -22,7 +22,7 @@ def home(request):
         context["createTime"]=i.create_time
         contexts.append(context.copy())
 
-    return render(request, 'index.html',{"imageInfo":contexts})
+    return render(request, 'photo.html',{"imageInfo":contexts})
 @csrf_exempt
 def upload(request):
     if request.method == 'POST':
@@ -37,4 +37,9 @@ def upload(request):
         form = CureDataImageForm()
     # return render_to_response('mysite/data_form.html', {'form': form})
     return  render(request,'upload.html',{'form':form})
+
+
+def love_time(request):
+
+    return render(request,'index.html')
 
