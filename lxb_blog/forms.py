@@ -8,4 +8,5 @@ class CureDataImageForm(forms.ModelForm):
     class Meta:
         model = myweb
         # fields = '__all__'  # ['name', 'create_at',  ...]
-        fields=('img_tittle','img_desc','image')
+        # fields=('img_tittle','img_desc','image')
+        fields = ( 'image',)

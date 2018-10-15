@@ -25,7 +25,7 @@ SECRET_KEY = 'pdd_mrvps6=$wz))luh+@la5gvlnr-*2uzh6y*)do@02c8tsu_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.11.156","127.0.0.1"]
+ALLOWED_HOSTS = ["*",]
 
 
 # Application definition
@@ -85,7 +85,7 @@ DATABASES = {
         'NAME': 'myweb',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST':'192.168.11.156',
+        'HOST':'192.168.1.196',
         'PORT':'3306',
     }
 }

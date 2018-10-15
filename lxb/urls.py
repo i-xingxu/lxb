@@ -21,5 +21,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r"^photo/",views.home),
     url(r'^upload/',views.upload),
-    url(r'^$',views.love_time)
+    url(r'^$',views.love_time),
 ]

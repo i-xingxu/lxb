@@ -3,7 +3,11 @@ from django.shortcuts import render
 from lxb_blog.models import myweb
 from lxb_blog.forms import CureDataImageForm
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.http import HttpResponseRedirect
+from django.conf import settings
+import os
 # Create your views here.
 
 def home(request):
@@ -25,21 +29,29 @@ def home(request):
     return render(request, 'photo.html',{"imageInfo":contexts})
 @csrf_exempt
 def upload(request):
+    if request.method =="GET":
+        return render(request, 'upload.html')
+
     if request.method == 'POST':
+        image=request.FILES.get("fileList")
+        # form = CureDataImageForm(request.POST or None, request.FILES or None)
+        # if form.is_valid():
+        if image.size>0:
+            # image = request.FILES.get('images')
+            # image.save()
+            path=default_storage.save("images/"+image.name,ContentFile(image.read()))
+            tmp_file=os.path.join(settings.MEDIA_ROOT,path)
+            # print(image.image.url)
 
-        form = CureDataImageForm(request.POST or None, request.FILES or None)
-        if form.is_valid():
-            image = form.save()
-            print(image.image.url)
-
-            # return HttpResponseRedirect('/mysite/success/')
-    else:
-        form = CureDataImageForm()
-    # return render_to_response('mysite/data_form.html', {'form': form})
-    return  render(request,'upload.html',{'form':form})
-
+            return HttpResponseRedirect('/')
+    # else:
+    #     form = CureDataImageForm()
+    # return render(request,'upload.html', {'form': form})
+    # return  render(request,{'form':form})
+    # return render(request, 'upload.html')
 
 def love_time(request):
 
     return render(request,'index.html')
+
 
