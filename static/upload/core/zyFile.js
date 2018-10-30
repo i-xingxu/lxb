@@ -9,6 +9,7 @@ var ZYFILE = {
 		dragDrop: null,				  //拖拽敏感区域
 		url : "",  					  // 上传action路径
 		uploadFile : [],  			  // 需要上传的文件数组
+		description : "",			  //图片的描述
 		lastUploadFile : [],          // 上一次选择的文件数组，方便继续上传使用
 		perUploadFile : [],           // 存放永久的文件数组，方便删除使用
 		fileNum : 0,                  // 代表文件总个数，因为涉及到继续添加，所以下一次添加需要在它的基础上添加索引
@@ -82,6 +83,10 @@ var ZYFILE = {
 			
 			return true;
 		},
+		//获取图片描述
+		funGetDescr : function(e){
+			this.description=e.target.value;
+		},
 		// 处理过滤后的文件，给每个文件设置下标
 		funDealtFiles : function(){
 			var self = this;
@@ -146,7 +151,8 @@ var ZYFILE = {
 			var self = this;  // 在each中this指向没个v  所以先将this保留
 			
 			var formdata = new FormData();
-			formdata.append("fileList", file);	         		
+			formdata.append("fileList", file);
+			formdata.append("description",this.description);
 			var xhr = new XMLHttpRequest();
 			// 绑定上传事件
 			// 进度
@@ -163,6 +169,7 @@ var ZYFILE = {
 		    	if(self.uploadFile.length==0){
 		    		// 回调全部完成方法
 		    		self.onComplete("全部完成");
+		    		window.location.href="/photo/";  //上传完成后跳转到图片页面
 		    	}
 		    }, false);  
 		    // 错误
@@ -197,7 +204,12 @@ var ZYFILE = {
 					self.funGetFiles(e); 
 				}, false);	
 			}
-			
+			//描述绑定事件
+			if(self.description){
+				this.description.addEventListener("change",function(e){
+					self.funGetDescr(e);
+				},false)
+			}
 			// 如果上传按钮存在
 			if(self.uploadInput){
 				// 绑定click事件

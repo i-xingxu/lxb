@@ -62,7 +62,7 @@
 	            	html += '						<input id="fileImage" type="file" size="30" name="fileselect[]" '+multiple+'>';
 	            	html += '					</div>';
 	            	html += '				</div>';
-					html += '				<textarea id="fileDragArea" class="upload_drag_area" placeholder="请输入要说的话..."></textarea>';
+					html += '				<textarea id="descrText" class="upload_drag_area" placeholder="请输入要说的话..."></textarea>';
 					html += '			</div>';
 		            html += '			<div class="status_bar">';
 		            html += '				<div id="status_info" class="info">选中0张文件，共0B。</div>';
@@ -239,6 +239,7 @@
 					fileInput: $("#fileImage").get(0),
 					uploadInput: $("#fileSubmit").get(0),
 					dragDrop: $("#fileDragArea").get(0),
+					description: $("#descrText").get(0),
 					url: $("#uploadForm").attr("action"),
 					
 					filterFile: function(files) {

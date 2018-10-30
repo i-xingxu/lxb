@@ -1,13 +1,14 @@
 #coding=utf-8
 from django.shortcuts import render
 from lxb_blog.models import myweb
-from lxb_blog.forms import CureDataImageForm
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.http import HttpResponseRedirect
 from django.conf import settings
+from django.shortcuts import redirect
 import os
+import time
 # Create your views here.
 
 def home(request):
@@ -34,21 +35,17 @@ def upload(request):
 
     if request.method == 'POST':
         image=request.FILES.get("fileList")
-        # form = CureDataImageForm(request.POST or None, request.FILES or None)
-        # if form.is_valid():
         if image.size>0:
-            # image = request.FILES.get('images')
-            # image.save()
             path=default_storage.save("images/"+image.name,ContentFile(image.read()))
             tmp_file=os.path.join(settings.MEDIA_ROOT,path)
-            # print(image.image.url)
+            picInfo={}
+            picInfo["img_desc"]=request.POST["description"]
+            picInfo["img_time"]=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+            picInfo["img_path"]=path
+            myweb().insert_into_description(picInfo)
 
-            return HttpResponseRedirect('/')
-    # else:
-    #     form = CureDataImageForm()
-    # return render(request,'upload.html', {'form': form})
-    # return  render(request,{'form':form})
-    # return render(request, 'upload.html')
+            return HttpResponseRedirect('')
+            # return  redirect('/photo/')
 
 def love_time(request):
 

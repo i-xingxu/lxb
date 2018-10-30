@@ -12,3 +12,9 @@ class myweb(models.Model):
 
     def __unicode__(self):
         return self.img_tittle,self.img_desc,self.img_path,self.create_time
+
+    # 向数据库插入图片描述
+    def insert_into_description(self,picInfo):
+        m=myweb(img_tittle=picInfo["img_desc"],create_time=picInfo["img_time"],image=picInfo["img_path"])
+        m.save()
+
