@@ -149,38 +149,88 @@ var ZYFILE = {
 		// 上传单个个文件
 		funUploadFile : function(file){
 			var self = this;  // 在each中this指向没个v  所以先将this保留
-			
-			var formdata = new FormData();
-			formdata.append("fileList", file);
-			formdata.append("description",this.description);
-			var xhr = new XMLHttpRequest();
-			// 绑定上传事件
-			// 进度
-		    xhr.upload.addEventListener("progress",	 function(e){
-		    	// 回调到外部
-		    	self.onProgress(file, e.loaded, e.total);
-		    }, false); 
-		    // 完成
-		    xhr.addEventListener("load", function(e){
-	    		// 从文件中删除上传成功的文件  false是不执行onDelete回调方法
-		    	self.funDeleteFile(file.index, false);
-		    	// 回调到外部
-		    	self.onSuccess(file, xhr.responseText);
-		    	if(self.uploadFile.length==0){
-		    		// 回调全部完成方法
-		    		self.onComplete("全部完成");
-		    		window.location.href="/photo/";  //上传完成后跳转到图片页面
-		    	}
-		    }, false);  
-		    // 错误
-		    xhr.addEventListener("error", function(e){
-		    	// 回调到外部
-		    	self.onFailure(file, xhr.responseText);
-		    }, false);  
-			
-			xhr.open("POST",self.url, true);
-			xhr.setRequestHeader("X_FILENAME", file.name);
-			xhr.send(formdata);
+            var formdata = new FormData();
+            formdata.append("description",this.description);
+            if(file.size/1024 > 1025) { //大于1M，进行压缩上传
+                photoCompress(file, {
+                    quality: 0.2
+                }, function (base64Codes) {
+                    //console.log("压缩后：" + base.length / 1024 + " " + base);
+                    var bl = convertBase64UrlToBlob(base64Codes);
+                    formdata.append("fileList", bl, "file_" + Date.parse(new Date()) + ".jpg"); // 文件对象
+
+					// formdata.append("description",this.description);
+					var xhr = new XMLHttpRequest();
+					// 绑定上传事件
+					// 进度
+					xhr.upload.addEventListener("progress",	 function(e){
+						// 回调到外部
+						self.onProgress(file, e.loaded, e.total);
+					}, false);
+					// 完成
+					xhr.addEventListener("load", function(e){
+						// 从文件中删除上传成功的文件  false是不执行onDelete回调方法
+						self.funDeleteFile(file.index, false);
+						// 回调到外部
+						self.onSuccess(file, xhr.responseText);
+						if(self.uploadFile.length==0){
+							// 回调全部完成方法
+							self.onComplete("全部完成");
+							window.location.href="/photo/";  //上传完成后跳转到图片页面
+						}
+					}, false);
+					// 错误
+					xhr.addEventListener("error", function(e){
+						// 回调到外部
+						self.onFailure(file, xhr.responseText);
+					}, false);
+
+					xhr.open("POST",self.url, true);
+					xhr.setRequestHeader("X_FILENAME", file.name);
+					xhr.send(formdata);
+
+
+
+
+
+
+                });
+            }else { //小于等于1M 原图上传
+                formdata.append("fileList", file); // 文件对象
+                // }
+
+
+                //formdata.append("fileList", file);
+                //formdata.append("description", this.description);
+                var xhr = new XMLHttpRequest();
+                // 绑定上传事件
+                // 进度
+                xhr.upload.addEventListener("progress", function (e) {
+                    // 回调到外部
+                    self.onProgress(file, e.loaded, e.total);
+                }, false);
+                // 完成
+                xhr.addEventListener("load", function (e) {
+                    // 从文件中删除上传成功的文件  false是不执行onDelete回调方法
+                    self.funDeleteFile(file.index, false);
+                    // 回调到外部
+                    self.onSuccess(file, xhr.responseText);
+                    if (self.uploadFile.length == 0) {
+                        // 回调全部完成方法
+                        self.onComplete("全部完成");
+                        window.location.href = "/photo/";  //上传完成后跳转到图片页面
+                    }
+                }, false);
+                // 错误
+                xhr.addEventListener("error", function (e) {
+                    // 回调到外部
+                    self.onFailure(file, xhr.responseText);
+                }, false);
+
+                xhr.open("POST", self.url, true);
+                xhr.setRequestHeader("X_FILENAME", file.name);
+                xhr.send(formdata);
+            }
 		},
 		// 返回需要上传的文件
 		funReturnNeedFiles : function(){
@@ -219,6 +269,64 @@ var ZYFILE = {
 			}
 		}
 };
+
+
+      function  photoCompress(file,w,objDiv){
+            var ready = new FileReader();
+            /*开始读取指定的Blob对象或File对象中的内容. 当读取操作完成时,readyState属性的值会成为DONE,如果设置了onloadend事件处理程序,则调用之.同时,result属性中将包含一个data: URL格式的字符串以表示所读取文件的内容.*/
+           // ready.readAsDataURL(file);
+           // alert(ready.result);
+            ready.onload= function (){
+                //var re = this.result;
+                canvasDataURL(ready.result, w, objDiv)
+           };
+           ready.readAsDataURL(file);
+        }
+
+        function canvasDataURL(path, obj, callback){
+            var img = new Image();
+            img.src = path;
+            img.onload = function(){
+            //var that = this;
+            //var that=t;
+            // 默认按比例压缩
+            var w = img.width,
+            h = img.height,
+            scale = w / h;
+            w = obj.width || w;
+            h = obj.height || (w / scale);
+            var quality = 0.7; // 默认图片质量为0.7
+            //生成canvas
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            // 创建属性节点
+            var anw = document.createAttribute("width");
+            anw.nodeValue = w;
+            var anh = document.createAttribute("height");
+            anh.nodeValue = h;
+            canvas.setAttributeNode(anw);
+            canvas.setAttributeNode(anh);
+            ctx.drawImage(img, 0, 0, w, h);
+            // 图像质量
+            if(obj.quality && obj.quality <= 1 && obj.quality > 0){
+            quality = obj.quality;
+            }
+            // quality值越小，所绘制出的图像越模糊
+            var base64 = canvas.toDataURL('image/jpeg', quality);
+            // 回调函数返回base64的值
+            callback(base64);
+            }
+      }
+        function convertBase64UrlToBlob(urlData){
+            var arr = urlData.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], {type:mime});
+       }
+
+
 
 
 
