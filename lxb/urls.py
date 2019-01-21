@@ -19,7 +19,7 @@ from lxb_blog import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r"^photo/",views.home),
+    url(r"^$",views.home),
     url(r'^upload/',views.upload),
-    url(r'^$',views.love_time),
+    url(r'^keeplove/',views.love_time),
 ]
