@@ -176,7 +176,7 @@ var ZYFILE = {
 						if(self.uploadFile.length==0){
 							// 回调全部完成方法
 							self.onComplete("全部完成");
-							window.location.href="/photo/";  //上传完成后跳转到图片页面
+							window.location.href="/";  //上传完成后跳转到图片页面
 						}
 					}, false);
 					// 错误
